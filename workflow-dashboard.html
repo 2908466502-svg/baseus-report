@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>倍思充电宝 · AI 内容生产工作流</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --border: #334155;
+    --primary: #8b5cf6;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'PingFang SC','Microsoft YaHei',-apple-system,sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; min-height: 100vh;
+  }
+  .hero {
+    text-align:center; padding: 48px 20px 36px;
+    background: linear-gradient(135deg, #1a1040 0%, #0f172a 50%, #0a2e3f 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: var(--muted); margin-top: 8px; font-size: 15px; }
+  .hero .badges { margin-top: 16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .badge {
+    padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  }
+  .badge.purple { background: rgba(139,92,246,0.2); color: var(--primary); }
+  .badge.blue { background: rgba(59,130,246,0.2); color: var(--blue); }
+  .badge.green { background: rgba(16,185,129,0.2); color: var(--green); }
+
+  .container { max-width: 1100px; margin:0 auto; padding: 32px 20px; }
+
+  /* Pipeline */
+  .pipeline {
+    display: flex; gap: 0; align-items: stretch;
+    margin: 32px 0; overflow-x: auto;
+  }
+  .pipe-step {
+    flex:1; min-width: 160px; text-align:center;
+    padding: 24px 16px; position:relative;
+    background: var(--card); border:1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .pipe-step:not(:last-child)::after {
+    content: '→'; position:absolute; right: -16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px; color: var(--primary); z-index:2;
+  }
+  .pipe-step .icon { font-size: 36px; margin-bottom: 8px; }
+  .pipe-step .title { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+  .pipe-step .sub { font-size: 11px; color: var(--muted); }
+  .pipe-step:nth-child(1) { border-top: 3px solid var(--primary); }
+  .pipe-step:nth-child(2) { border-top: 3px solid var(--blue); }
+  .pipe-step:nth-child(3) { border-top: 3px solid var(--cyan); }
+  .pipe-step:nth-child(4) { border-top: 3px solid var(--green); }
+  .pipe-step:nth-child(5) { border-top: 3px solid var(--amber); }
+
+  /* Cards */
+  .section-title {
+    font-size: 22px; font-weight: 800; margin: 40px 0 20px;
+    padding-left: 14px; border-left: 4px solid var(--primary);
+  }
+  .card {
+    background: var(--card); border:1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  }
+  .card h3 { font-size: 17px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+  /* Tables */
+  table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
+  thead th { background: rgba(139,92,246,0.1); color: var(--text); font-weight:700; padding:10px 14px; text-align:left; border-bottom:2px solid var(--border); }
+  tbody td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:hover { background: rgba(139,92,246,0.05); }
+
+  /* Tags */
+  .tag {
+    display:inline-block; font-size:11px; font-weight:700;
+    padding:2px 10px; border-radius:10px; margin:2px;
+  }
+  .tag.pain { background:rgba(139,92,246,0.2); color:var(--primary); }
+  .tag.demo { background:rgba(59,130,246,0.2); color:var(--blue); }
+  .tag.comp { background:rgba(6,182,212,0.2); color:var(--cyan); }
+  .tag.promo { background:rgba(245,158,11,0.2); color:var(--amber); }
+  .tag.ip { background:rgba(239,68,68,0.15); color:var(--red); }
+
+  /* Flow detail */
+  .flow-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .flow-card {
+    background: var(--card); border:1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .flow-card h4 { font-size:15px; font-weight:700; margin-bottom:8px; }
+  .flow-card .io { display:flex; gap:8px; margin-top:10px; font-size:12px; }
+  .flow-card .io span { padding:3px 10px; border-radius:6px; background:rgba(255,255,255,0.05); }
+
+  /* Architecture */
+  .arch-row { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0; }
+  .arch-box {
+    flex:1; min-width:200px; padding:16px;
+    border-radius: var(--radius); border:1px solid var(--border);
+  }
+  .arch-box h5 { font-size:13px; margin-bottom:8px; }
+  .arch-box ul { list-style:none; font-size:12px; color:var(--muted); }
+  .arch-box ul li { padding:2px 0; }
+  .arch-box ul li::before { content:'▸ '; color:var(--primary); }
+
+  .arch-input { background:rgba(139,92,246,0.05); border-color:rgba(139,92,246,0.3); }
+  .arch-engine { background:rgba(245,158,11,0.05); border-color:rgba(245,158,11,0.3); }
+  .arch-output { background:rgba(16,185,129,0.05); border-color:rgba(16,185,129,0.3); }
+
+  .footer { text-align:center; padding:40px 20px; color:var(--muted); font-size:12px; border-top:1px solid var(--border); margin-top:48px; }
+
+  @media (max-width:768px) {
+    .pipeline { flex-direction:column; }
+    .pipe-step:not(:last-child)::after { content:'↓'; right:50%; top:auto; bottom:-20px; transform:translateX(50%); }
+    .hero h1 { font-size:24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>⚡ 倍思充电宝 · AI 内容生产工作流</h1>
+  <p>Baseus Power Bank — AI Content Production Pipeline</p>
+  <div class="badges">
+    <span class="badge purple">📋 选题策划</span>
+    <span class="badge blue">✍️ 脚本生成</span>
+    <span class="badge" style="background:rgba(6,182,212,0.2);color:#06b6d4">🔄 变体扩写</span>
+    <span class="badge green">✅ 质量审核</span>
+    <span class="badge" style="background:rgba(245,158,11,0.2);color:#f59e0b">📅 发布日历</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 1. Pipeline overview -->
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="icon">🎯</div>
+      <div class="title">选题策划</div>
+      <div class="sub">产品库 + 热点 + 竞品<br/>→ 7天14条选题</div>
+    </div>
+    <div class="pipe-step">
+      <div class="icon">✍️</div>
+      <div class="title">脚本生成</div>
+      <div class="sub">选题 + 模板 + AI<br/>→ 完整分镜脚本</div>
+    </div>
+    <div class="pipe-step">
+      <div class="icon">🔄</div>
+      <div class="title">变体扩写</div>
+      <div class="sub">1个母版<br/>→ 3个变体版本</div>
+    </div>
+    <div class="pipe-step">
+      <div class="icon">✅</div>
+      <div class="title">质量审核</div>
+      <div class="sub">5维度评分<br/>→ PASS / REVISE / REJECT</div>
+    </div>
+    <div class="pipe-step">
+      <div class="icon">📅</div>
+      <div class="title">发布日历</div>
+      <div class="sub">周度排期表<br/>→ 可直接执行</div>
+    </div>
+  </div>
+
+  <!-- 2. Weekly Schedule -->
+  <h2 class="section-title">📅 一周内容排期（产出示例）</h2>
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>星期</th><th>时间</th><th>类型</th><th>标题</th><th>产品</th></tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="2"><strong>周一</strong></td><td>12:00</td><td><span class="tag pain">场景痛点</span></td><td>出差忘带充电线，这是最崩溃的瞬间</td><td>EnerCore</td></tr>
+        <tr><td>18:00</td><td><span class="tag demo">功能展示</span></td><td>65W 快充到底有多快？实测给你看</td><td>Blade</td></tr>
+        <tr><td rowspan="2"><strong>周二</strong></td><td>12:00</td><td><span class="tag demo">功能展示</span></td><td>充电宝厚度对比：银行卡 vs 倍思 Blade</td><td>Blade</td></tr>
+        <tr><td>18:00</td><td><span class="tag comp">对比测评</span></td><td>倍思 vs 安克 vs 小米：百元充电宝横评</td><td>EnerCore</td></tr>
+        <tr><td rowspan="2"><strong>周三</strong></td><td>12:00</td><td><span class="tag pain">场景痛点</span></td><td>磁吸充电宝有多方便？iPhone 用户狂喜</td><td>PicoGo</td></tr>
+        <tr><td>21:00</td><td><span class="tag promo">促销转化</span></td><td>限时特惠！倍思充电宝直降</td><td>EnerCore</td></tr>
+        <tr><td rowspan="2"><strong>周四</strong></td><td>12:00</td><td><span class="tag ip">IP 人设</span></td><td>王一博同款充电宝长什么样？</td><td>PicoGo</td></tr>
+        <tr><td>18:00</td><td><span class="tag demo">功能展示</span></td><td>机场被拦充电宝？3C 认证新规必看</td><td>EnerCore</td></tr>
+        <tr><td rowspan="2"><strong>周五</strong></td><td>12:00</td><td><span class="tag pain">场景痛点</span></td><td>周末出游充电指南：一个搞定全部</td><td>EnerGeek</td></tr>
+        <tr><td>18:00</td><td><span class="tag comp">对比测评</span></td><td>绿联 vs 倍思充电宝：实测对比</td><td>Blade</td></tr>
+        <tr><td rowspan="2"><strong>周六</strong></td><td>12:00</td><td><span class="tag promo">促销转化</span></td><td>周末限时闪购！Blade 直降 30</td><td>Blade</td></tr>
+        <tr><td>18:00</td><td><span class="tag demo">功能展示</span></td><td>用倍思给 MacBook 充电是什么体验</td><td>Blade</td></tr>
+        <tr><td rowspan="2"><strong>周日</strong></td><td>12:00</td><td><span class="tag ip">IP 人设</span></td><td>CFO 为什么亲自下场讲充电宝？</td><td>PicoGo</td></tr>
+        <tr><td>21:00</td><td><span class="tag pain">场景痛点</span></td><td>本周爆款复盘 + 下周福利预告</td><td>EnerCore</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. Pipeline detail -->
+  <h2 class="section-title">🔧 每个环节做什么</h2>
+  <div class="flow-grid">
+    <div class="flow-card">
+      <h4>🎯 ① 选题策划</h4>
+      <p style="font-size:13px;color:var(--muted)">AI 基于品牌产品库 + 竞品动态 + 当下热点，自动生成一周选题。每条选题精确到：发什么时间、用什么内容类型、打哪个产品、目标人群是谁。</p>
+      <div class="io">
+        <span>📥 产品库 / 竞品情报 / 热点日历</span>
+        <span>📤 01-plan.json</span>
+      </div>
+    </div>
+    <div class="flow-card">
+      <h4>✍️ ② 脚本生成</h4>
+      <p style="font-size:13px;color:var(--muted)">根据选题 + 内容模板，生成完整的分镜脚本。包含时间码、画面描述、台词、备注、BGM 建议、话题标签。技术参数自动翻译为场景化语言。</p>
+      <div class="io">
+        <span>📥 选题 + 模板库</span>
+        <span>📤 02-scripts.md</span>
+      </div>
+    </div>
+    <div class="flow-card">
+      <h4>🔄 ③ 变体扩写</h4>
+      <p style="font-size:13px;color:var(--muted)">每个母版自动生成 3 个变体：A 换钩子类型、B 换使用场景、C 换 CTA 语气。骨架不变，差异化元素轮换，避免素材同质化。</p>
+      <div class="io">
+        <span>📥 母版脚本</span>
+        <span>📤 03-variations.json</span>
+      </div>
+    </div>
+    <div class="flow-card">
+      <h4>✅ ④ 质量审核</h4>
+      <p style="font-size:13px;color:var(--muted)">5 维度量化评分：钩子力 / 场景真实感 / 卖点场景化 / CTA 有效性 / 合规安全。≥20分 PASS → 进入发布队列；15-19分 REVISE → AI 自动优化；<15分 REJECT → 废弃。</p>
+      <div class="io">
+        <span>📥 脚本</span>
+        <span>📤 04-review.json</span>
+      </div>
+    </div>
+    <div class="flow-card">
+      <h4>📅 ⑤ 发布日历</h4>
+      <p style="font-size:13px;color:var(--muted)">自动生成周度发布日历：每天什么时间发、发什么内容、哪个产品、脚本在哪。带运营备忘：周一赶出差高峰、周三晚促销转化高、周四明星IP配合粉丝活跃时段。</p>
+      <div class="io">
+        <span>📥 审核通过的脚本</span>
+        <span>📤 05-calendar.md</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Architecture -->
+  <h2 class="section-title">🏗️ 技术架构</h2>
+  <div class="arch-row">
+    <div class="arch-box arch-input">
+      <h5>📥 输入层</h5>
+      <ul>
+        <li>品牌信息库（产品/卖点/痛点）</li>
+        <li>竞品情报（安克/小米/绿联）</li>
+        <li>热点日历（大促/新规/出行季）</li>
+        <li>内容类型配比策略</li>
+        <li>合规规则引擎</li>
+      </ul>
+    </div>
+    <div class="arch-box arch-engine">
+      <h5>🧠 AI 引擎</h5>
+      <ul>
+        <li>选题策划 Agent</li>
+        <li>脚本生成 Agent</li>
+        <li>变体生成 Agent</li>
+        <li>质量审核 Agent</li>
+        <li>OpenAI 兼容接口</li>
+        <li>支持本地/云端模型</li>
+      </ul>
+    </div>
+    <div class="arch-box arch-output">
+      <h5>📤 输出层</h5>
+      <ul>
+        <li>01-plan.json — 选题排期</li>
+        <li>02-scripts.md — 分镜脚本</li>
+        <li>03-variations.json — 变体库</li>
+        <li>04-review.json — 审核报告</li>
+        <li>05-calendar.md — 发布日历</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5. Template system -->
+  <h2 class="section-title">🎬 内容模板体系</h2>
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>模板类型</th><th>占比</th><th>时长</th><th>钩子风格</th><th>适配产品</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag pain">场景痛点型</span></td>
+          <td>30%</td>
+          <td>25-35s</td>
+          <td>共鸣痛点 / 好奇悬念 / 反常识 / 视觉冲击</td>
+          <td>全系列</td>
+        </tr>
+        <tr>
+          <td><span class="tag demo">功能展示型</span></td>
+          <td>25%</td>
+          <td>20-30s</td>
+          <td>功能惊喜 / 速度实测 / 技术科普</td>
+          <td>Blade / EnerCore</td>
+        </tr>
+        <tr>
+          <td><span class="tag comp">对比测评型</span></td>
+          <td>15%</td>
+          <td>35-45s</td>
+          <td>价格对比 / 性能实测 / 差异化</td>
+          <td>全系列</td>
+        </tr>
+        <tr>
+          <td><span class="tag promo">促销转化型</span></td>
+          <td>20%</td>
+          <td>15-25s</td>
+          <td>限时优惠 / 限量稀缺 / 价格锚点</td>
+          <td>Blade / EnerCore</td>
+        </tr>
+        <tr>
+          <td><span class="tag ip">IP 人设型</span></td>
+          <td>10%</td>
+          <td>25-40s</td>
+          <td>明星 / CFO科普 / 数码博主</td>
+          <td>PicoGo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. How to use -->
+  <h2 class="section-title">🚀 如何使用</h2>
+  <div class="card">
+    <h3>演示模式（立即可用，无需 API）</h3>
+    <pre style="background:rgba(0,0,0,0.3);padding:12px 16px;border-radius:8px;font-size:13px;">cd baseus-content-ai
+node workflow.js demo</pre>
+
+    <h3 style="margin-top:20px;">接入 AI 服务（实时生成）</h3>
+    <pre style="background:rgba(0,0,0,0.3);padding:12px 16px;border-radius:8px;font-size:13px;"># 配置你的 AI 服务（OpenAI 兼容接口即可）
+export AI_API_URL="http://localhost:3688/v1"
+export AI_API_KEY="your-key"
+export AI_MODEL="deepseek-chat"
+
+# 一键全流程
+node workflow.js full
+
+# 或单独运行某个步骤
+node workflow.js plan       # 选题策划
+node workflow.js generate   # 脚本生成
+node workflow.js variate    # 变体扩写
+node workflow.js review     # 质量审核
+node workflow.js calendar   # 发布日历</pre>
+  </div>
+
+  <!-- 7. Feishu presentation -->
+  <h2 class="section-title">📱 飞书呈现方式</h2>
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>方式</th><th>适用场景</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>⭐ Mermaid 流程图</strong></td>
+          <td>飞书文档内嵌展示</td>
+          <td>飞书文档中输入 <code>/mermaid</code>，粘贴流程图代码</td>
+        </tr>
+        <tr>
+          <td><strong>飞书流程图</strong></td>
+          <td>交互式流程展示</td>
+          <td>新建 → 飞书流程图 → 拖拽节点</td>
+        </tr>
+        <tr>
+          <td><strong>多维表格看板</strong></td>
+          <td>团队协作管理</td>
+          <td>导入选题 → 看板视图 → 按状态拖拽</td>
+        </tr>
+        <tr>
+          <td><strong>本 HTML 页面</strong></td>
+          <td>链接分享 / 演示</td>
+          <td>部署到 GitHub Pages → 发链接</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  倍思科技 · 信息流运营部 · AI 内容生产工作流 v1.0 · 2026年6月<br>
+  Built with Node.js · OpenAI Compatible API · Mermaid · Feishu
+</div>
+
+</body>
+</html>
