@@ -42,6 +42,11 @@
   .tag.green { background:#f0fdf4; color:var(--green); }
   .tag.amber { background:#fffbeb; color:var(--amber); }
   .tag.red { background:#fef2f2; color:var(--red); }
+  .source { display:inline-block; font-size:9px; font-weight:500; padding:1px 6px; border-radius:4px; margin-left:4px; vertical-align:middle; }
+  .source.jd { background:#f0fdf4; color:#15803d; }
+  .source.observe { background:#eff6ff; color:#2563eb; }
+  .source.general { background:#f8fafc; color:#64748b; }
+  .source.estimate { background:#fffbeb; color:#b45309; }
 
   table { width:100%; border-collapse:collapse; margin:12px 0; font-size:12px; }
   thead th { background:#f8fafc; color:var(--title); font-weight:700; padding:9px 12px; text-align:left; border-bottom:2px solid var(--border); }
@@ -104,18 +109,25 @@
 <h1>倍思新媒体运营岗位调研</h1>
 <p class="subtitle">一份能让你看懂「千川信息流运营」在做什么、怎么做、需要什么能力的实操手册</p>
 
+<div style="margin-bottom:28px;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:8px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:11px;">
+  <span style="font-weight:700;color:var(--title);">数据来源标注：</span>
+  <span><span class="source jd">JD原文</span> 来自招聘网站岗位描述</span>
+  <span><span class="source observe">账号观察</span> 基于抖音官方账号实际内容统计</span>
+  <span><span class="source general">行业通用</span> 千川投手岗位通识经验</span>
+  <span><span class="source estimate">区间估算</span> 基于公开信息反推，仅供参考</span>
+</div>
+
 <!-- ═══════ 一 ═══════ -->
 <section id="s1">
   <h2>一、这个岗位每天在做什么</h2>
 
   <div class="card">
     <h3>岗位全景一句话</h3>
-    <p>倍思的信息流运营是一个<strong>「素材 + 投放」混合岗</strong>。每天的核心工作是：确保千川广告账户正常跑量，素材跟得上消耗速度，ROI 不低于保本线。</p>
-    <p style="font-size:12px;color:var(--muted);">调研来源：倍思抖音官方账号（Baseus.GaN，122w 粉）+ 千川投放数据反推 + 行业公开信息</p>
+    <p>倍思的信息流运营是一个<strong>「素材 + 投放」混合岗</strong> <span class="source general">行业通用</span>。每天的核心工作是：确保千川广告账户正常跑量，素材跟得上消耗速度，ROI 不低于保本线。</p>
   </div>
 
   <div id="s1b" class="card">
-    <h3>一天的工作时间线</h3>
+    <h3>一天的工作时间线 <span class="source general">行业通用</span></h3>
     <table>
       <thead><tr><th>时段</th><th>做什么</th><th>为什么做</th></tr></thead>
       <tbody>
@@ -130,7 +142,7 @@
   </div>
 
   <div id="s1c" class="card">
-    <h3>内容类型体系：他们到底在拍什么</h3>
+    <h3>内容类型体系：他们到底在拍什么 <span class="source observe">账号观察</span></h3>
     <table>
       <thead><tr><th>内容类型</th><th>占比</th><th>时长</th><th>作用</th><th>例子</th></tr></thead>
       <tbody>
@@ -149,10 +161,10 @@
     <table>
       <thead><tr><th>平台</th><th>角色</th><th>做什么</th><th>投入程度</th></tr></thead>
       <tbody>
-        <tr><td><strong>抖音（千川）</strong></td><td>核心收割战场</td><td>信息流投放 + 直播转化，主账号122w粉，日更6-20条</td><td><span class="tag green">★★★★★</span></td></tr>
-        <tr><td><strong>小红书</strong></td><td>种草蓄水</td><td>达人合作笔记，官方号基本不发，靠达人铺量</td><td><span class="tag amber">★★★</span></td></tr>
-        <tr><td><strong>B站</strong></td><td>深度信任建设</td><td>硬核数码测评 + 技术拆解，构建专业信任</td><td><span class="tag amber">★★★</span></td></tr>
-        <tr><td><strong>TikTok/YouTube</strong></td><td>海外增量</td><td>海外达人测评，TikTok 29.6w粉，爆款播放230w</td><td><span class="tag blue">★★★★</span></td></tr>
+        <tr><td><strong>抖音（千川）</strong></td><td>核心收割战场 <span class="source observe">账号观察</span></td><td>信息流投放 + 直播转化，主账号122w粉，日更6-20条 <span class="source observe">账号观察</span></td><td><span class="tag green">★★★★★</span></td></tr>
+        <tr><td><strong>小红书</strong></td><td>种草蓄水</td><td>达人合作笔记，官方号基本不发，靠达人铺量 <span class="source observe">账号观察</span></td><td><span class="tag amber">★★★</span></td></tr>
+        <tr><td><strong>B站</strong></td><td>深度信任建设</td><td>硬核数码测评 + 技术拆解 <span class="source observe">账号观察</span></td><td><span class="tag amber">★★★</span></td></tr>
+        <tr><td><strong>TikTok/YouTube</strong></td><td>海外增量</td><td>海外达人测评，TikTok 29.6w粉 <span class="source observe">账号观察</span></td><td><span class="tag blue">★★★★</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -163,7 +175,7 @@
   <h2>二、怎么做：方法 + 工具</h2>
 
   <div id="s2b" class="card">
-    <h3>素材生产：SOP 化模板填槽体系</h3>
+    <h3>素材生产：SOP 化模板填槽体系 <span class="source general">行业通用</span></h3>
     <p>倍思的素材不是「每条原创」，而是<strong>「模板化生产」</strong>。一个爆款脚本骨架可以复用几十次，只换槽位内容。</p>
 
     <div class="pipeline"><span class="hl">【第一层：脚本骨架（固定）】</span>
@@ -184,7 +196,7 @@
   </div>
 
   <div id="s2c" class="card">
-    <h3>投放操作：三账户分工矩阵</h3>
+    <h3>投放操作：三账户分工矩阵 <span class="source observe">账号观察</span> <span class="source estimate">消耗为区间估算</span></h3>
     <table>
       <thead><tr><th>账户</th><th>角色</th><th>季度消耗估算</th><th>策略差异</th></tr></thead>
       <tbody>
@@ -207,7 +219,7 @@
   </div>
 
   <div id="s2d" class="card">
-    <h3>数据盯盘：关键节奏和指标</h3>
+    <h3>数据盯盘：关键节奏和指标 <span class="source general">行业通用</span></h3>
     <div class="kpi-row">
       <div class="kpi-card"><div class="val">24h</div><div class="lbl">素材首次评估节点</div></div>
       <div class="kpi-card"><div class="val">48h</div><div class="lbl">决定替换或继续投</div></div>
@@ -234,7 +246,7 @@
   <h2>三、需要什么能力</h2>
 
   <div class="card">
-    <h3>能力模型总览</h3>
+    <h3>能力模型总览 <span class="source general">行业通用</span></h3>
     <div class="skill-grid">
       <div class="skill-card">
         <h4>🛠 硬技能</h4>
@@ -282,7 +294,7 @@
   <h2>四、产出怎么衡量</h2>
 
   <div class="card">
-    <h3>这个岗位的 KPI</h3>
+    <h3>这个岗位的 KPI <span class="source general">行业通用</span> <span class="source estimate">GMV为区间估算</span></h3>
     <div class="kpi-row">
       <div class="kpi-card"><div class="val">消耗</div><div class="lbl">月度消耗目标达成</div></div>
       <div class="kpi-card"><div class="val">ROI</div><div class="lbl">不低于保本线（1.2-1.5）</div></div>
